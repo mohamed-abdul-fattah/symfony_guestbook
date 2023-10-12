@@ -1,7 +1,7 @@
 FROM php:8.1
 
 RUN apt update  \
-    && apt install -yq git vim libpq-dev \
+    && apt install -yq git vim libpq-dev unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install postgreSQL PHP extensions
