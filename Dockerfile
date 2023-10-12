@@ -2,8 +2,12 @@ FROM php:8.1
 
 RUN apt update  \
     && apt install -yq git vim libpq-dev \
-    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pgsql pdo_pgsql
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Install postgreSQL PHP extensions
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pgsql pdo_pgsql \
+    && docker-php-ext-enable pdo_pgsql
 
 # Install symfony CLI
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash \
@@ -12,8 +16,6 @@ RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | b
     && chown 1000:1000 -R /.symfony5
 
 # Install composer
-RUN curl https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer \
-    | php -- --quiet \
-    && mv composer.phar /usr/local/bin/composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 EXPOSE 8000
