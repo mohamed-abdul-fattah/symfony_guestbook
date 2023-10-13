@@ -3,7 +3,7 @@ version: '3.9'
 services:
   app:
     build: .
-    image: guestbook_app:1.0.1
+    image: guestbook_app:1.0.2
     stdin_open: true
     tty: true
     user: ${UID}:${UID}

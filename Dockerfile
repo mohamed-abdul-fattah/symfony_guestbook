@@ -1,13 +1,14 @@
 FROM php:8.1
 
 RUN apt update  \
-    && apt install -yq git vim libpq-dev unzip \
+    && apt install -yq git vim libpq-dev libicu-dev unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install postgreSQL PHP extensions
 RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pgsql pdo_pgsql \
-    && docker-php-ext-enable pdo_pgsql
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl pgsql pdo_pgsql \
+    && docker-php-ext-enable intl pdo_pgsql
 
 # Install symfony CLI
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash \
