@@ -8,17 +8,14 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
 /.symfony5
+/public/uploads/
 
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
-
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-/phpunit.xml
-###< symfony/phpunit-bridge ###
 
 # IDE generated file
 /.idea
