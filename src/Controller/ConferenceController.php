@@ -17,7 +17,7 @@ class ConferenceController extends AbstractController
         return $this->render('conference/index.html.twig');
     }
 
-    #[Route('/conference/{id}', name: 'conference')]
+    #[Route('/conference/{slug}', name: 'conference')]
     public function show(Request $request, Conference $conference, CommentRepository $commentRepository): Response
     {
         $offset    = max(0, $request->query->get('offset', 0));
