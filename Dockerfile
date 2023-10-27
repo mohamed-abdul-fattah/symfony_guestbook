@@ -7,7 +7,7 @@ RUN apt update  \
 # Install postgreSQL PHP extensions
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions \
-    && install-php-extensions intl pdo_pgsql xsl
+    && install-php-extensions intl pdo_pgsql xsl opcache
 
 # Install symfony CLI
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash \
