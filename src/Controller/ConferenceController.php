@@ -22,6 +22,7 @@ use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
+#[Route('/{_locale<%app.supported_locales%>}/')]
 class ConferenceController extends AbstractController
 {
     public function __construct(
@@ -30,7 +31,7 @@ class ConferenceController extends AbstractController
     )
     {}
 
-    #[Route('/', name: 'homepage', methods: ['GET'])]
+    #[Route('', name: 'homepage', methods: ['GET'])]
     public function index(ConferenceRepository $conferenceRepository): Response
     {
         return $this->render('conference/index.html.twig', [
@@ -45,7 +46,7 @@ class ConferenceController extends AbstractController
      * @throws ClientExceptionInterface
      * @throws \Exception
      */
-    #[Route('/conference/{slug}', name: 'conference')]
+    #[Route('conference/{slug}', name: 'conference')]
     public function show(
         Request $request,
         Conference $conference,
@@ -108,7 +109,7 @@ class ConferenceController extends AbstractController
         ]);
     }
 
-    #[Route('/conference_header', name: 'conference_header')]
+    #[Route('conference_header', name: 'conference_header')]
     public function conferenceHeader(ConferenceRepository $conferenceRepository): Response
     {
         return $this->render('conference/header.html.twig', [
