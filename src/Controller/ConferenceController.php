@@ -13,6 +13,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -48,13 +50,12 @@ class ConferenceController extends AbstractController
         Request $request,
         Conference $conference,
         CommentRepository $commentRepository,
+        NotifierInterface $notifier,
         #[Autowire('%photo_dir%')] string $photoDir,
     ): Response
     {
-        $offset    = max(0, $request->query->get('offset', 0));
-        $paginator = $commentRepository->getCommentPaginator($conference, $offset);
-        $comment   = new Comment();
-        $form      = $this->createForm(CommentType::class, $comment);
+        $comment = new Comment();
+        $form    = $this->createForm(CommentType::class, $comment);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -77,9 +78,27 @@ class ConferenceController extends AbstractController
             ];
             $this->bus->dispatch(new CommentMessage($comment->getId(), $context));
 
+            $notifier->send(
+                new Notification(
+                    'Thank you for the feedback; your comment will be posted after moderation.',
+                    ['browser'],
+                ),
+            );
+
             return $this->redirectToRoute('conference', ['slug' => $conference->getSlug()]);
         }
 
+        if ($form->isSubmitted()) {
+            $notifier->send(
+                new Notification(
+                    'Can you check your submission? There are some problems with it.',
+                    ['browser']
+                )
+            );
+        }
+
+        $offset    = max(0, $request->query->get('offset', 0));
+        $paginator = $commentRepository->getCommentPaginator($conference, $offset);
         return $this->render('conference/show.html.twig', [
             'conference'   => $conference,
             'comments'     => $paginator,
